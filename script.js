@@ -1,42 +1,29 @@
-const API =
-"https://script.google.com/macros/s/AKfycbw8PpXQkw5I-ZGhQ1IKhvflNTJDYbuQWKUpd9FT8nUhDhtC1jCEICyU6t2TQa5B2mLO/exec";
+const API = "https://script.google.com/macros/s/AKfycbw8PpXQkw5I-ZGhQ1IKhvflNTJDYbuQWKUpd9FT8nUhDhtC1jCEICyU6t2TQa5B2mLO/exec";
 
-function login(){
+function login() {
 
-let username=document.getElementById("username").value;
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-let password=document.getElementById("password").value;
+    fetch(API +
+        "?username=" + encodeURIComponent(username) +
+        "&password=" + encodeURIComponent(password))
+    .then(response => response.json())
+    .then(data => {
 
-fetch(API,{
+        if (data.success) {
+            localStorage.setItem("name", data.name);
+            window.location.href = "index.html";
+        }
+        else {
+            document.getElementById("msg").innerHTML =
+                "Invalid Username or Password";
+        }
 
-method:"POST",
-
-body:JSON.stringify({
-
-username:username,
-
-password:password
-
-})
-
-})
-
-.then(res=>res.json())
-
-.then(data=>{
-
-if(data.success){
-
-localStorage.setItem("name",data.name);
-
-window.location="index.html";
-
-}else{
-
-document.getElementById("msg").innerHTML="Invalid Login";
-
-}
-
-});
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Connection failed");
+    });
 
 }
